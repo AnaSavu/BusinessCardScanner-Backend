@@ -43,8 +43,8 @@ def mainImageWrapper():
 
     crop_object = CropImage(th)
     croppedImage = crop_object.cropImageIntoBC(approx)
-    cv2.imwrite("../output.jpeg", croppedImage)
+    cv2.imwrite("output.jpeg", croppedImage)
 
 def mainOCRWrapper():
-    string_image = ImageConvertor("../output.jpeg").toBase64()
+    string_image = ImageConvertor("output.jpeg").toBase64()
     return HttpRequest(string_image).getHttpResponse()
