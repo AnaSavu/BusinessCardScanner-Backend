@@ -15,33 +15,12 @@ class HttpRequest:
                   "features": [
                     {
                       "maxResults": 50,
-                      "type": "OBJECT_LOCALIZATION"
-                    },
-                    {
-                      "maxResults": 50,
-                      "type": "LABEL_DETECTION"
-                    },
-                    {
-                      "maxResults": 50,
                       "model": "builtin/latest",
                       "type": "DOCUMENT_TEXT_DETECTION"
-                    },
-                    {
-                      "maxResults": 50,
-                      "type": "SAFE_SEARCH_DETECTION"
                     }
                   ],
                   "image": {
                     "content": self.__image
-                  },
-                  "imageContext": {
-                    "cropHintsParams": {
-                      "aspectRatios": [
-                        0.8,
-                        1,
-                        1.2
-                      ]
-                    }
                   }
                 }
               ]
