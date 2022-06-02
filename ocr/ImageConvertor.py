@@ -7,6 +7,5 @@ class ImageConvertor:
     def toBase64(self):
         with open("output.jpeg", "rb") as img_file:
             encoded_string = base64.b64encode(img_file.read())
-        print(encoded_string)
         return encoded_string
 

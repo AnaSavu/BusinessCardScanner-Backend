@@ -1,5 +1,6 @@
 import base64
 import cv2
+import uvicorn
 
 from fastapi import FastAPI, Form, File
 from pydantic import BaseModel
@@ -7,7 +8,7 @@ from pydantic import BaseModel
 from ocr.HttpRequest import HttpRequest
 from ocr.ImageConvertor import ImageConvertor
 from preprocessImage.CannyEdgeDetector import CannyEdgeDetector
-from preprocessImage.Contour import Contour
+from preprocessImage.ContourImage import Contour
 from preprocessImage.CropImage import CropImage
 from preprocessImage.EditImage import EditImage
 
@@ -47,4 +48,7 @@ def mainImageWrapper():
 
 def mainOCRWrapper():
     string_image = ImageConvertor("output.jpeg").toBase64()
-    return HttpRequest(string_image).getHttpResponse()
+    return HttpRequest(string_image).getHttpResponseFromNLP()
+#
+# if __name__ == "__main__":
+#     uvicorn.run('main:app', host="0.0.0.0", port=8080, reload=True)

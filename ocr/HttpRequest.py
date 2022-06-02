@@ -9,7 +9,9 @@ class HttpRequest:
         self.__image = string_image
         self.__image = self.__image.decode('utf-8')
         self.__apiKey = None
-        self.__data = {
+        self.__dataFromImage = None
+        self.__dataNLP = None
+        self.__dataOCR = {
               "requests": [
                 {
                   "features": [
@@ -32,14 +34,43 @@ class HttpRequest:
         with open('apikey.txt') as f:
             self.__apiKey = f.readline()
 
-    def getHttpResponse(self):
+    def getHttpResponseFromOCR(self):
+        url = "https://vision.googleapis.com/v1/images:annotate" + "?key=" + self.__apiKey
+
+        response = requests.post(url, json.dumps(self.__dataOCR))
+        json_response = response.json()
+        description = json_response.get("responses")[0].get("textAnnotations")[0].get("description")
+        self.__dataFromImage = description
+
+    def getHttpResponseFromNLP(self):
         self.__getApiKey()
 
-        url = "https://vision.googleapis.com/v1/images:annotate"  + "?key=" + self.__apiKey
+        self.getHttpResponseFromOCR()
 
-        response = requests.post(url, json.dumps(self.__data))
-        # x = json.loads(str(response), object_hook=lambda d: SimpleNamespace(**d))
+        self.__dataNLP = {
+            "document": {
+                "content": self.__dataFromImage,
+                "type": "PLAIN_TEXT"
+            },
+            "features": {
+                "extractSyntax": False,
+                "extractEntities": True,
+                "extractDocumentSentiment": False,
+                "extractEntitySentiment": False,
+                "classifyText": False
+            }
+        }
+
+        url = "https://language.googleapis.com/v1/documents:annotateText" + "?key=" + self.__apiKey
+
+        response = requests.post(url, json.dumps(self.__dataNLP))
+        response_dict = {}
         json_response = response.json()
-        print(json_response)
-        description = json_response.get("responses")[0].get("textAnnotations")[0].get("description")
-        return description
+        entities = json_response.get("entities")
+        for el in entities:
+            # print(el)
+            if el.get("type") not in response_dict.keys():
+                response_dict[el.get("type")] = el.get("name")
+        # print(response_dict)
+        dict_to_json = json.dumps(response_dict)
+        return dict_to_json
