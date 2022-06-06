@@ -1,7 +1,7 @@
 import json
-from types import SimpleNamespace
 
 import requests
+import re
 
 
 class HttpRequest:
@@ -30,11 +30,11 @@ class HttpRequest:
 
 
 
-    def __getApiKey(self):
+    def __get_api_key(self):
         with open('apikey.txt') as f:
             self.__apiKey = f.readline()
 
-    def getHttpResponseFromOCR(self):
+    def __get_response_from_google_ocr(self):
         url = "https://vision.googleapis.com/v1/images:annotate" + "?key=" + self.__apiKey
 
         response = requests.post(url, json.dumps(self.__dataOCR))
@@ -42,10 +42,12 @@ class HttpRequest:
         description = json_response.get("responses")[0].get("textAnnotations")[0].get("description")
         self.__dataFromImage = description
 
-    def getHttpResponseFromNLP(self):
-        self.__getApiKey()
+    def get_response_from_google_nlp(self):
+        self.__get_api_key()
 
-        self.getHttpResponseFromOCR()
+        self.__get_response_from_google_ocr()
+
+        match = re.search(r'[\w.+-]+@[\w-]+\.[\w.-]+', self.__dataFromImage)
 
         self.__dataNLP = {
             "document": {
@@ -71,6 +73,8 @@ class HttpRequest:
             # print(el)
             if el.get("type") not in response_dict.keys():
                 response_dict[el.get("type")] = el.get("name")
+
+        response_dict["EMAIL"] = match.group(0)
         # print(response_dict)
         dict_to_json = json.dumps(response_dict)
         return dict_to_json

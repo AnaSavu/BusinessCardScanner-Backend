@@ -5,13 +5,13 @@ import imutils
 import numpy as np
 
 
-class Contour:
+class ContourImage:
     def __init__(self, image):
         self.__logger = logging.getLogger("Contour")
         self.__image = image
-        self.__contours = None
+        # self.__contours = None
 
-    def findContours(self, resized_image):
+    def get_contours(self, resized_image):
         contours, hierarchy = cv2.findContours(self.__image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         simplified_contours = []
 
@@ -21,7 +21,7 @@ class Contour:
                                                         0.001 * cv2.arcLength(hull, True), True))
         simplified_contours = np.array(simplified_contours)
 
-        biggest_n, approx_contour = self. _findBiggestRectangle(simplified_contours, resized_image.size)
+        biggest_n, approx_contour = self. __get_biggest_rectangle(simplified_contours, resized_image.size)
         image_copy = resized_image.copy()
 
         threshold = cv2.drawContours(image_copy, simplified_contours, biggest_n, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
@@ -47,7 +47,7 @@ class Contour:
         # threshold = cv2.drawContours(image_copy, [screenCnt], -1, (0, 255, 0), 2)
         # return threshold, image_copy, screenCnt
 
-    def _findBiggestRectangle(self, contours, min_area):
+    def __get_biggest_rectangle(self, contours, min_area):
         biggest = None
         max_area = 0
         biggest_n = 0
@@ -66,5 +66,5 @@ class Contour:
 
         return biggest_n, approx_contour
 
-    def getContours(self):
-        return self.__contours
+    # def getContours(self):
+    #     return self.__contours

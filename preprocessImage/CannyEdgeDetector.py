@@ -8,7 +8,7 @@ class CannyEdgeDetector:
         self.__logger = logging.getLogger("Canny Edge Detector")
         self.__image = image
 
-    def _applyCannyAlgorithm(self, sigma=0.33):
+    def get_canny_image(self, sigma=0.33):
         v = np.median(self.__image)
 
         if v > 191:

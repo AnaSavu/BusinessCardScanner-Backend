@@ -8,8 +8,8 @@ class CropImage:
         self.__logger = logging.getLogger("Crop Image")
         self.__image = image
 
-    def four_point_transform(self, pts):
-        rect = self.order_points(pts)
+    def __four_point_transform(self, pts):
+        rect = self.__order_points(pts)
         (top_left, top_right, bottom_right, bottom_left) = rect
 
         widthA = np.sqrt(((bottom_right[0] - bottom_left[0]) ** 2) + ((bottom_right[1] - bottom_left[1]) ** 2))
@@ -31,7 +31,7 @@ class CropImage:
 
         return warped
 
-    def order_points(self, pts):
+    def __order_points(self, pts):
         pts = pts.reshape(4, 2)
         rect = np.zeros((4, 2), dtype="float32")
 
@@ -45,9 +45,9 @@ class CropImage:
 
         return rect
 
-    def cropImageIntoBC(self, approx):
+    def crop_image_into_business_card(self, approx):
         dst = 0
         if approx is not None and len(approx) == 4:
             approx_contour = np.float32(approx)
-            dst = self.four_point_transform(approx_contour)
+            dst = self.__four_point_transform(approx_contour)
         return dst

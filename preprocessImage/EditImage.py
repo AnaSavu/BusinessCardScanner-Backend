@@ -7,7 +7,7 @@ class EditImage:
         self.__logger = logging.getLogger("Edit Image")
         self.__image = image
 
-    def _convertImageAndBlur(self):
+    def __convert_grayscale_and_blur(self):
         self.__logger.info("Gray scale image and apply Gaussian filter for smoothening")
         yuv_image = cv2.cvtColor(self.__image, cv2.COLOR_BGR2GRAY)
         # image_y = np.zeros(yuv_image.shape[0:2], np.uint8)
@@ -15,21 +15,21 @@ class EditImage:
         blur_image = cv2.GaussianBlur(yuv_image, (5, 5), 0)
         return blur_image
 
-    def _equalizeHistogram(self):
-        return cv2.equalizeHist(self.__image)
+    # def _equalizeHistogram(self):
+    #     return cv2.equalizeHist(self.__image)
+    #
+    # def _binaryThreshold(self):
+    #     ret, thresh = cv2.threshold(self._convertImageAndBlur(), 150, 255, cv2.THRESH_BINARY)
+    #     return thresh
 
-    def _binaryThreshold(self):
-        ret, thresh = cv2.threshold(self._convertImageAndBlur(), 150, 255, cv2.THRESH_BINARY)
-        return thresh
-
-    def _resizeImage(self):
+    def resize_image(self):
         self.__logger.info("Resize the image by half")
         self.__logger.info(self.__image.shape)
         self.__image = cv2.resize(self.__image, (0, 0), fx=0.5, fy=0.5)
         self.__logger.info(self.__image.shape)
         return self.__image
 
-    def contrast_and_brightness(self, brightness=0, contrast=0):
+    def __contrast_and_brightness(self, brightness=0, contrast=0):
         if brightness != 0:
             if brightness > 0:
                 shadow = brightness
@@ -54,12 +54,12 @@ class EditImage:
 
         return buf
 
-    def _editImage(self):
-        self.__image = self.contrast_and_brightness(-64, 64)
-        self.__image = self._convertImageAndBlur()
+    def edit_image(self):
+        self.__image = self.__contrast_and_brightness(-64, 64)
+        self.__image = self.__convert_grayscale_and_blur()
         # self.__image =  self._equalizeHistogram()
 
-        return self._resizeImage()
+        return self.resize_image()
 
 
     def getEditedImage(self):
