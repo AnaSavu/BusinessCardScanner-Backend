@@ -5,26 +5,25 @@ import numpy as np
 
 class CannyEdgeDetector:
     def __init__(self, image):
-        self.__logger = logging.getLogger("Canny Edge Detector")
         self.__image = image
 
     def get_canny_image(self, sigma=0.33):
-        v = np.median(self.__image)
+        median = np.median(self.__image)
 
-        if v > 191:
-            lower = int(max(0, (1 - 2 * sigma) * (255 - v)))
-            upper = int(max(85, (1 + 2 * sigma) * (255 - v)))
+        if median > 191:
+            lower_threshold = int(max(0, (1 - 2 * sigma) * (255 - median)))
+            upper_threshold = int(max(85, (1 + 2 * sigma) * (255 - median)))
 
-        elif v > 127:
-            lower = int(max(0, (1 - sigma) * (255 - v)))
-            upper = int(max(255, (1 + sigma) * (255 - v)))
+        elif median > 127:
+            lower_threshold = int(max(0, (1 - sigma) * (255 - median)))
+            upper_threshold = int(max(255, (1 + sigma) * (255 - median)))
 
-        elif v < 63:
-            lower = int(max(0, (1 - 2 * sigma) * v))
-            upper = int(max(85, (1 + 2 * sigma) * v))
+        elif median < 63:
+            lower_threshold = int(max(0, (1 - 2 * sigma) * median))
+            upper_threshold = int(max(85, (1 + 2 * sigma) * median))
 
         else:
-            lower = int(max(0, (1.0 - sigma) * v))
-            upper = int(min(255, (1.0 + sigma) * v))
+            lower_threshold = int(max(0, (1.0 - sigma) * median))
+            upper_threshold = int(min(255, (1.0 + sigma) * median))
 
-        return cv2.Canny(self.__image, lower, upper, apertureSize=3)
+        return cv2.Canny(self.__image, lower_threshold, upper_threshold, apertureSize=3)

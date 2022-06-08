@@ -4,15 +4,13 @@ import numpy as np
 
 class EditImage:
     def __init__(self, image):
-        self.__logger = logging.getLogger("Edit Image")
         self.__image = image
 
     def __convert_grayscale_and_blur(self):
-        self.__logger.info("Gray scale image and apply Gaussian filter for smoothening")
-        yuv_image = cv2.cvtColor(self.__image, cv2.COLOR_BGR2GRAY)
+        grayscale_image = cv2.cvtColor(self.__image, cv2.COLOR_BGR2GRAY)
         # image_y = np.zeros(yuv_image.shape[0:2], np.uint8)
         # image_y[:, :] = yuv_image[:, :, 0]
-        blur_image = cv2.GaussianBlur(yuv_image, (5, 5), 0)
+        blur_image = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
         return blur_image
 
     # def _equalizeHistogram(self):
@@ -23,10 +21,7 @@ class EditImage:
     #     return thresh
 
     def resize_image(self):
-        self.__logger.info("Resize the image by half")
-        self.__logger.info(self.__image.shape)
         self.__image = cv2.resize(self.__image, (0, 0), fx=0.5, fy=0.5)
-        self.__logger.info(self.__image.shape)
         return self.__image
 
     def __contrast_and_brightness(self, brightness=0, contrast=0):
@@ -41,18 +36,18 @@ class EditImage:
             alpha_b = (highlight - shadow) / 255
             gamma_b = shadow
 
-            buf = cv2.addWeighted(self.__image, alpha_b, self.__image, 0, gamma_b)
+            buffer = cv2.addWeighted(self.__image, alpha_b, self.__image, 0, gamma_b)
         else:
-            buf = self.__image.copy()
+            buffer = self.__image.copy()
 
         if contrast != 0:
             f = 131 * (contrast + 127) / (127 * (131 - contrast))
             alpha_c = f
             gamma_c = 127 * (1 - f)
 
-            buf = cv2.addWeighted(buf, alpha_c, buf, 0, gamma_c)
+            buffer = cv2.addWeighted(buffer, alpha_c, buffer, 0, gamma_c)
 
-        return buf
+        return buffer
 
     def edit_image(self):
         self.__image = self.__contrast_and_brightness(-64, 64)
