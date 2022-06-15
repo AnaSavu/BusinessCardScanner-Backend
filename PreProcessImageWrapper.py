@@ -1,3 +1,5 @@
+import logging
+
 import cv2
 
 from preprocessImage.CannyEdgeDetector import CannyEdgeDetector
@@ -22,4 +24,7 @@ class PreProcessImageWrapper:
 
         crop_object = CropImage(th)
         cropped_image = crop_object.crop_image_into_business_card(approx)
-        cv2.imwrite("output.jpeg", cropped_image)
+        if cropped_image == 0:
+            cv2.imwrite("output.jpeg", image)
+        else:
+            cv2.imwrite("output.jpeg", cropped_image)
