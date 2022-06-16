@@ -24,7 +24,8 @@ class PreProcessImageWrapper:
 
         crop_object = CropImage(th)
         cropped_image = crop_object.crop_image_into_business_card(approx)
-        if cropped_image == 0:
-            cv2.imwrite("output.jpeg", image)
-        else:
+        try:
+            if cropped_image == 0:
+                cv2.imwrite("output.jpeg", image)
+        except:
             cv2.imwrite("output.jpeg", cropped_image)
