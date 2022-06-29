@@ -14,12 +14,12 @@ class ContourImage:
         simplified_contours = []
 
         for contour in contours:
-            hull = cv2.convexHull(contour)
+            hull = cv2.convexHull(contour) # a concave shape, will be approximated to a convex boundary that most tightly encloses it
             simplified_contours.append(cv2.approxPolyDP(hull,
-                                                        0.001 * cv2.arcLength(hull, True), True))
+                                                        0.001 * cv2.arcLength(hull, True), True)) # a shape is approximated to a another shape consisitng of a lesser number of vertices
         simplified_contours = np.array(simplified_contours)
 
-        biggest_n, approx_contour = self. __get_biggest_rectangle(simplified_contours, resized_image.size)
+        biggest_n, approx_contour = self.__get_biggest_rectangle(simplified_contours, resized_image.size)
         image_copy = resized_image.copy()
 
         threshold = cv2.drawContours(image_copy, simplified_contours, biggest_n, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
@@ -27,7 +27,6 @@ class ContourImage:
         return threshold, image_copy, approx_contour
 
     def __get_biggest_rectangle(self, contours, min_area):
-        biggest = None
         max_area = 0
         biggest_n = 0
         approx_contour = None
@@ -35,10 +34,8 @@ class ContourImage:
             area = cv2.contourArea(i)
 
             if area > min_area / 10:
-                peri = cv2.arcLength(i, True)
-                approx = cv2.approxPolyDP(i, 0.02 * peri, True)
+                approx = cv2.approxPolyDP(i, 0.02 * (cv2.arcLength(i, True)), True)
                 if area > max_area and len(approx) == 4:
-                    biggest = approx
                     max_area = area
                     biggest_n = n
                     approx_contour = approx

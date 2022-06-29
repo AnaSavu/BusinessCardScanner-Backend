@@ -8,17 +8,8 @@ class EditImage:
 
     def __convert_grayscale_and_blur(self):
         grayscale_image = cv2.cvtColor(self.__image, cv2.COLOR_BGR2GRAY)
-        # image_y = np.zeros(yuv_image.shape[0:2], np.uint8)
-        # image_y[:, :] = yuv_image[:, :, 0]
         blur_image = cv2.GaussianBlur(grayscale_image, (5, 5), 0)
         return blur_image
-
-    # def _equalizeHistogram(self):
-    #     return cv2.equalizeHist(self.__image)
-    #
-    # def _binaryThreshold(self):
-    #     ret, thresh = cv2.threshold(self._convertImageAndBlur(), 150, 255, cv2.THRESH_BINARY)
-    #     return thresh
 
     def resize_image(self):
         self.__image = cv2.resize(self.__image, (0, 0), fx=0.5, fy=0.5)

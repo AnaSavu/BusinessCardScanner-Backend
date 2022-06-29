@@ -13,7 +13,7 @@ class PreProcessImageWrapper:
         pass
 
     def main_preporcess_image_wrapper(self):
-        image = cv2.imread("test.jpeg")
+        image = cv2.imread("input.jpeg")
 
         resized_image = EditImage(image).resize_image()
         edit_image = EditImage(image).edit_image()
